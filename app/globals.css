@@ -1,0 +1,222 @@
+@import "tailwindcss";
+
+:root {
+  --cream: #edece4;
+  --cream-light: #f5f4ec;
+  --olive: #4a5d23;
+  --olive-light: #6b7b4a;
+  --olive-dark: #3a4a1e;
+  --olive-faint: rgba(74, 93, 35, 0.06);
+  --olive-mute: rgba(74, 93, 35, 0.16);
+
+  /* Aliases used by older components */
+  --background: var(--cream);
+  --surface: var(--cream-light);
+  --surface-muted: var(--cream-light);
+  --surface-strong: #e2e0d2;
+  --surface-opaque: rgb(237 236 228 / 0.85);
+  --border: var(--olive-faint);
+  --border-strong: var(--olive-mute);
+  --text-strong: var(--olive);
+  --text-muted: var(--olive-light);
+  --text-subtle: rgba(74, 93, 35, 0.55);
+  --accent: #e87a4f;
+}
+
+@theme inline {
+  --color-cream: var(--cream);
+  --color-cream-light: var(--cream-light);
+  --color-olive: var(--olive);
+  --color-olive-light: var(--olive-light);
+  --color-olive-dark: var(--olive-dark);
+
+  --color-background: var(--cream);
+  --color-surface: var(--cream-light);
+  --color-surface-muted: var(--cream-light);
+  --color-surface-strong: var(--surface-strong);
+  --color-border: var(--olive-faint);
+  --color-border-strong: var(--olive-mute);
+  --color-text-strong: var(--olive);
+  --color-text-muted: var(--olive-light);
+  --color-text-subtle: var(--text-subtle);
+  --color-accent: var(--accent);
+
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), ui-serif, Georgia, serif;
+}
+
+html,
+body {
+  font-family: var(--font-sans);
+  background: var(--cream);
+  color: var(--olive);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Subtle link underline animation */
+.link-underline {
+  position: relative;
+  display: inline-block;
+}
+.link-underline::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width 300ms ease;
+}
+.link-underline:hover::before {
+  width: 100%;
+}
+
+/* Floating-blob keyframes */
+@keyframes drift-a {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(30px, -40px) scale(1.05); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes drift-b {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(-40px, 30px) scale(1.07); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes drift-c {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(20px, 40px) scale(0.95); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes pulse-soft {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.05); }
+}
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes orbit-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Registered custom property so GSAP can interpolate the angle smoothly */
+@property --sweep {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.disc-wedge {
+  background: conic-gradient(
+    from -90deg,
+    var(--wedge-color) 0deg,
+    var(--wedge-color) var(--sweep, 0deg),
+    transparent var(--sweep, 0deg),
+    transparent 360deg
+  );
+}
+@keyframes loader-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.loader-fade-up {
+  animation: loader-fade-up 220ms ease-out;
+}
+
+/* SkillsOrbit — unique idle float paths per orb */
+@keyframes orb-float-a {
+  0%, 100% { transform: translate(0, 0); }
+  25%      { transform: translate(22px, -16px); }
+  50%      { transform: translate(0, -30px); }
+  75%      { transform: translate(-18px, -12px); }
+}
+@keyframes orb-float-b {
+  0%, 100% { transform: translate(0, 0); }
+  33%      { transform: translate(-22px, 14px); }
+  66%      { transform: translate(16px, 20px); }
+}
+@keyframes orb-float-c {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(10px, -14px); }
+}
+.orb-float-a { animation: orb-float-a 15s ease-in-out infinite; }
+.orb-float-b { animation: orb-float-b 18s ease-in-out infinite; }
+.orb-float-c { animation: orb-float-c 12s ease-in-out infinite; }
+
+/* ProcessScroll — gentle stack bob and per-disc wobble */
+@keyframes stack-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+.stack-bob { animation: stack-bob 6s ease-in-out infinite; }
+
+@keyframes disc-wobble {
+  0%, 100% { transform: rotateZ(-0.6deg); }
+  50%      { transform: rotateZ(0.6deg); }
+}
+.disc-wobble-0 { animation: disc-wobble 10s ease-in-out infinite; }
+.disc-wobble-1 { animation: disc-wobble 11s ease-in-out -2s infinite; }
+.disc-wobble-2 { animation: disc-wobble 12s ease-in-out -4s infinite; }
+.disc-wobble-3 { animation: disc-wobble 13s ease-in-out -6s infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .orb-float-a, .orb-float-b, .orb-float-c,
+  .stack-bob,
+  .disc-wobble-0, .disc-wobble-1, .disc-wobble-2, .disc-wobble-3 {
+    animation: none !important;
+  }
+}
+
+/* Hover-fill name effect: ghost text by default, gradient sweeps in on hover */
+.hover-fill-wrap {
+  position: relative;
+  display: inline-block;
+  cursor: default;
+}
+.hover-fill-ghost {
+  color: rgba(74, 93, 35, 0.22);
+}
+.hover-fill-top {
+  position: absolute;
+  inset: 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 800ms cubic-bezier(0.65, 0, 0.35, 1);
+  pointer-events: none;
+}
+.role-card:hover .hover-fill-top,
+.hover-fill-wrap:hover .hover-fill-top {
+  clip-path: inset(0 0 0 0);
+}
+
+.blob-a { animation: drift-a 14s ease-in-out infinite; }
+.blob-b { animation: drift-b 18s ease-in-out infinite; }
+.blob-c { animation: drift-c 16s ease-in-out infinite; }
+.pulse-soft { animation: pulse-soft 8s ease-in-out infinite; }
+.spin-slow { animation: spin-slow 30s linear infinite; }
+
+/* Word-by-word fade-in */
+@keyframes word-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.word-in {
+  display: inline-block;
+  opacity: 0;
+  animation: word-in 600ms ease forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob-a, .blob-b, .blob-c, .pulse-soft, .spin-slow, .word-in,
+  .orbit-spin, [style*="orbit-spin"] {
+    animation: none !important;
+  }
+  .word-in { opacity: 1; transform: none; }
+  .link-underline::before { transition: none; }
+}
