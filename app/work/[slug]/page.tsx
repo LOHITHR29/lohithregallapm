@@ -1,11 +1,46 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { caseStudies, type CaseStudy, type Priority } from "@/data/case-studies";
 
+// Internal case studies have all deep-dive fields populated. External ones
+// (which redirect to a Drive PDF etc.) only have the teaser fields.
+type InternalCaseStudy = CaseStudy & {
+  context: NonNullable<CaseStudy["context"]>;
+  segment: NonNullable<CaseStudy["segment"]>;
+  research: NonNullable<CaseStudy["research"]>;
+  insights: NonNullable<CaseStudy["insights"]>;
+  persona: NonNullable<CaseStudy["persona"]>;
+  journey: NonNullable<CaseStudy["journey"]>;
+  trueProblem: NonNullable<CaseStudy["trueProblem"]>;
+  solutions: NonNullable<CaseStudy["solutions"]>;
+  chosenRationale: NonNullable<CaseStudy["chosenRationale"]>;
+  userStories: NonNullable<CaseStudy["userStories"]>;
+  metrics: NonNullable<CaseStudy["metrics"]>;
+};
+
+function isInternal(c: CaseStudy): c is InternalCaseStudy {
+  return (
+    !c.external &&
+    !!c.context &&
+    !!c.segment &&
+    !!c.research &&
+    !!c.insights &&
+    !!c.persona &&
+    !!c.journey &&
+    !!c.trueProblem &&
+    !!c.solutions &&
+    !!c.chosenRationale &&
+    !!c.userStories &&
+    !!c.metrics
+  );
+}
+
 export function generateStaticParams() {
-  return caseStudies.map((c) => ({ slug: c.slug }));
+  // Only pre-render internal case study pages. External entries redirect
+  // and don't need a static build.
+  return caseStudies.filter(isInternal).map((c) => ({ slug: c.slug }));
 }
 
 export default async function CaseStudyPage({
@@ -16,6 +51,8 @@ export default async function CaseStudyPage({
   const { slug } = await params;
   const c = caseStudies.find((x) => x.slug === slug);
   if (!c) notFound();
+  if (c.external) redirect(c.external);
+  if (!isInternal(c)) notFound();
 
   return (
     <>
@@ -43,7 +80,7 @@ export default async function CaseStudyPage({
 // Sections
 // ────────────────────────────────────────────────────────────────────────────
 
-function Hero({ c }: { c: CaseStudy }) {
+function Hero({ c }: { c: InternalCaseStudy }) {
   return (
     <section className="relative w-full pt-32 lg:pt-40 pb-16 lg:pb-20 overflow-hidden">
       <div className="mx-auto max-w-[1100px] px-6 lg:px-10">
@@ -72,7 +109,7 @@ function Hero({ c }: { c: CaseStudy }) {
   );
 }
 
-function Context({ c }: { c: CaseStudy }) {
+function Context({ c }: { c: InternalCaseStudy }) {
   return (
     <Section eyebrow="Context" title={c.context.title}>
       <div className="flex flex-col gap-4 max-w-[64ch]">
@@ -89,7 +126,7 @@ function Context({ c }: { c: CaseStudy }) {
   );
 }
 
-function Segment({ c }: { c: CaseStudy }) {
+function Segment({ c }: { c: InternalCaseStudy }) {
   return (
     <Section eyebrow="Segment" title={c.segment.label}>
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-6 max-w-[900px]">
@@ -113,7 +150,7 @@ function Segment({ c }: { c: CaseStudy }) {
   );
 }
 
-function Research({ c }: { c: CaseStudy }) {
+function Research({ c }: { c: InternalCaseStudy }) {
   return (
     <Section eyebrow="Research" title="How I learned the problem" muted>
       <p className="text-[15px] lg:text-[17px] leading-[1.7] text-[color:var(--olive-light)] max-w-[64ch]">
@@ -158,7 +195,7 @@ function Research({ c }: { c: CaseStudy }) {
   );
 }
 
-function Insights({ c }: { c: CaseStudy }) {
+function Insights({ c }: { c: InternalCaseStudy }) {
   return (
     <Section eyebrow="Insights" title="What I found">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
@@ -194,7 +231,7 @@ function InsightColumn({ title, items }: { title: string; items: string[] }) {
   );
 }
 
-function Persona({ c }: { c: CaseStudy }) {
+function Persona({ c }: { c: InternalCaseStudy }) {
   return (
     <Section eyebrow="Persona" title="Who we built for" muted>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
@@ -228,7 +265,7 @@ function Persona({ c }: { c: CaseStudy }) {
   );
 }
 
-function Journey({ c }: { c: CaseStudy }) {
+function Journey({ c }: { c: InternalCaseStudy }) {
   return (
     <Section eyebrow="Journey" title={c.journey.title}>
       <p className="text-[14px] lg:text-[15px] italic text-[color:var(--olive-light)] max-w-[60ch] mb-10">
@@ -282,7 +319,7 @@ function JourneyCell({
   );
 }
 
-function TrueProblem({ c }: { c: CaseStudy }) {
+function TrueProblem({ c }: { c: InternalCaseStudy }) {
   const tp = c.trueProblem;
   return (
     <Section eyebrow="The real problem" title="What's actually going on" muted>
@@ -326,7 +363,7 @@ function ProblemBlock({
   );
 }
 
-function Solutions({ c }: { c: CaseStudy }) {
+function Solutions({ c }: { c: InternalCaseStudy }) {
   return (
     <Section eyebrow="Solutions" title="What I considered, and what I picked">
       <div className="overflow-x-auto -mx-6 lg:mx-0">
@@ -426,7 +463,7 @@ function RICECell({
   );
 }
 
-function UserStories({ c }: { c: CaseStudy }) {
+function UserStories({ c }: { c: InternalCaseStudy }) {
   return (
     <Section eyebrow="User stories" title="What I shipped, in user voice" muted>
       <div className="flex flex-col gap-10">
@@ -456,7 +493,7 @@ function UserStories({ c }: { c: CaseStudy }) {
   );
 }
 
-function Metrics({ c }: { c: CaseStudy }) {
+function Metrics({ c }: { c: InternalCaseStudy }) {
   return (
     <Section eyebrow="Metrics" title="How we knew it was working">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
