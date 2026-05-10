@@ -45,6 +45,7 @@ export default function AboutPage() {
       <main className="relative z-10 flex-1">
         <AboutHero />
         <NowSection />
+        <Publications />
         <Extracurriculars />
         <Education />
         <Certs />
@@ -106,6 +107,84 @@ function Extracurriculars() {
               </div>
             </article>
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const publications = [
+  {
+    title: "Forensic Speaker Recognition System",
+    venue: "Undergraduate research, KL University",
+    year: "2023",
+    summary:
+      "An ML-driven pipeline for forensic speaker identification — combining signal-processing front-ends (MFCC, spectral features) with classifier ensembles to support more reliable voice attribution in criminal investigations than traditional heuristic methods.",
+    tags: ["Machine learning", "Signal processing", "Audio forensics"],
+  },
+  {
+    title: "Diabetic Retinopathy Detection from Retinal Images",
+    venue: "Accepted for publication",
+    year: "2023",
+    summary:
+      "A deep-learning model that classifies diabetic retinopathy stages from retinal fundus images, hitting 95% accuracy with a VGG backbone — aimed at early-screening workflows in clinics where ophthalmologist availability is the bottleneck.",
+    tags: ["Deep learning", "VGG", "Medical imaging", "Healthcare AI"],
+  },
+];
+
+function Publications() {
+  return (
+    <section className="relative w-full">
+      <div className="mx-auto max-w-[1200px] px-6 lg:px-10 py-16 lg:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-end mb-10 lg:mb-12">
+          <div className="lg:col-span-4">
+            <p className="text-[14px] tracking-[0.18em] uppercase text-[color:var(--olive-light)] mb-3">
+              Publications
+            </p>
+            <h2 className="font-display text-[36px] lg:text-[56px] leading-[1.05] tracking-[-0.015em] text-[color:var(--olive)]">
+              Research, <em className="italic">papers.</em>
+            </h2>
+          </div>
+          <p className="lg:col-span-8 text-[15px] lg:text-[16px] leading-[1.6] text-[color:var(--olive-light)] max-w-[60ch]">
+            Two pieces of research from my undergraduate years — one in
+            audio forensics, one in medical imaging. Both use deep learning
+            applied to messy real-world data where the ground truth is
+            already someone&apos;s job.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6">
+          {publications.map((p) => (
+            <article
+              key={p.title}
+              className="rounded-[24px] border border-[color:var(--olive-mute)] bg-[color:var(--cream-light)] p-6 lg:p-8 flex flex-col gap-4"
+            >
+              <div className="flex items-baseline justify-between gap-4">
+                <p className="text-[12px] tracking-[0.16em] uppercase text-[color:var(--olive-light)]">
+                  {p.venue}
+                </p>
+                <p className="font-display text-[16px] lg:text-[18px] text-[color:var(--olive-light)] leading-none">
+                  {p.year}
+                </p>
+              </div>
+              <h3 className="font-display text-[22px] lg:text-[28px] leading-tight text-[color:var(--olive)]">
+                {p.title}
+              </h3>
+              <p className="text-[14px] lg:text-[15px] leading-[1.65] text-[color:var(--olive-light)] max-w-[58ch]">
+                {p.summary}
+              </p>
+              <div className="flex flex-wrap gap-2 mt-auto pt-2">
+                {p.tags.map((t) => (
+                  <span
+                    key={t}
+                    className="text-[11px] tracking-[0.06em] uppercase text-[color:var(--olive)] border border-[color:var(--olive-mute)] rounded-full px-3 py-1"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>

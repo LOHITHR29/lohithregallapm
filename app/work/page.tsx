@@ -1,6 +1,8 @@
+import Link from "next/link";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import WorkHero from "@/components/WorkHero";
+import { caseStudies } from "@/data/case-studies";
 
 type Role = {
   num: string;
@@ -164,10 +166,206 @@ export default function WorkPage() {
       <main className="relative z-10 flex-1">
         <WorkHero />
         <Timeline />
+        <CaseStudies />
         <Principles />
+        <Skills />
       </main>
       <Footer />
     </>
+  );
+}
+
+function CaseStudies() {
+  return (
+    <section className="relative w-full">
+      <div className="mx-auto max-w-[1100px] px-6 lg:px-10 py-12 lg:py-16">
+        <div className="mb-12 lg:mb-16 text-center">
+          <p className="text-[12px] tracking-[0.2em] uppercase text-[color:var(--olive-light)] mb-3">
+            Case studies
+          </p>
+          <h2 className="font-display text-[36px] sm:text-[48px] lg:text-[56px] leading-[1.05] tracking-[-0.015em] text-[color:var(--olive)] max-w-[22ch] mx-auto">
+            Three deep-dives on problems I worked on.
+          </h2>
+          <p className="mt-6 mx-auto max-w-[58ch] text-[15px] lg:text-[16px] leading-[1.6] text-[color:var(--olive-light)]">
+            Each case study walks through the segment, the research, the
+            real problem, the solutions I considered, and how we&apos;d know
+            it worked.
+          </p>
+        </div>
+
+        <div className="flex flex-col">
+          {caseStudies.map((c, i) => {
+            const inner = (
+              <>
+                <aside className="lg:col-span-3 flex lg:flex-col gap-4 lg:gap-3 items-start">
+                  <span className="font-display text-[20px] lg:text-[24px] text-[color:var(--olive-light)] leading-none tracking-[0.06em]">
+                    {c.num}
+                  </span>
+                  <span
+                    aria-hidden
+                    className={`inline-block w-12 h-12 rounded-full bg-gradient-to-br ${c.accent}`}
+                  />
+                  <p className="text-[12px] tracking-[0.16em] uppercase text-[color:var(--olive-light)] mt-auto">
+                    {c.company}
+                  </p>
+                </aside>
+
+                <div className="lg:col-span-9 flex flex-col gap-4">
+                  <h3 className="font-display text-[28px] lg:text-[40px] leading-[1.05] tracking-[-0.015em] text-[color:var(--olive)] group-hover:translate-x-1 transition-transform">
+                    {c.title}
+                  </h3>
+                  <p className="font-display italic text-[18px] lg:text-[22px] leading-[1.45] text-[color:var(--olive-light)] max-w-[60ch]">
+                    {c.problemLine}
+                  </p>
+                  <span className="mt-2 inline-flex items-center gap-2 text-[14px] tracking-[0.06em] text-[color:var(--olive)] group-hover:gap-3 transition-all">
+                    {c.external ? "View full case study" : "Read case study"} →
+                  </span>
+                </div>
+              </>
+            );
+
+            const className = `group grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 py-10 lg:py-12 ${
+              i < caseStudies.length - 1
+                ? "border-b border-[color:var(--olive-mute)]"
+                : ""
+            }`;
+
+            return c.external ? (
+              <a
+                key={c.slug}
+                href={c.external}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={className}
+              >
+                {inner}
+              </a>
+            ) : (
+              <Link key={c.slug} href={`/work/${c.slug}`} className={className}>
+                {inner}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const skillGroups: {
+  n: string;
+  category: string;
+  items: string[];
+}[] = [
+  {
+    n: "01",
+    category: "Product fundamentals",
+    items: [
+      "Writing PRDs that survive the sprint",
+      "Roadmapping under uncertainty",
+      "User research — interviews, diary studies, support-ticket mining",
+      "Prioritisation frameworks (RICE, MoSCoW, opportunity-solution trees)",
+      "Stakeholder updates and decision docs",
+    ],
+  },
+  {
+    n: "02",
+    category: "AI literacy",
+    items: [
+      "Model evaluation — offline benchmarks and online metrics",
+      "Prompt design and iteration",
+      "Hallucination handling and graceful degradation",
+      "Scoping AI features against capability vs. UX trade-offs",
+      "Building eval datasets and golden sets",
+    ],
+  },
+  {
+    n: "03",
+    category: "Data & analytics",
+    items: [
+      "SQL for ad-hoc analysis",
+      "Mixpanel / Amplitude / GA4",
+      "Funnel and cohort analysis",
+      "A/B test design and reading results without fooling yourself",
+      "Behavioural instrumentation that future-you doesn't curse",
+    ],
+  },
+  {
+    n: "04",
+    category: "Build partnerships",
+    items: [
+      "Figma fluency — mocks, prototypes, design-system literacy",
+      "GitHub, Linear, Notion as daily tools",
+      "System-design literacy enough to scope across services",
+      "API design basics — endpoints, auth, error contracts",
+      "Translating spec into engineering tickets that don't ping-pong",
+    ],
+  },
+  {
+    n: "05",
+    category: "Communication",
+    items: [
+      "Async writing — decisions, RFCs, weekly notes",
+      "Translating between engineering, design, leadership, and users",
+      "Demo and launch comms",
+      "Saying no with reasons people can act on",
+    ],
+  },
+];
+
+function Skills() {
+  return (
+    <section className="relative w-full bg-[color:var(--cream)] mt-8 lg:mt-12">
+      <div className="mx-auto max-w-[1200px] px-6 lg:px-10 py-16 lg:py-20">
+        <div className="mb-12 lg:mb-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+          <div className="lg:col-span-7">
+            <p className="text-[12px] tracking-[0.2em] uppercase text-[color:var(--olive-light)] mb-3">
+              Skills
+            </p>
+            <h2 className="font-display text-[36px] sm:text-[48px] lg:text-[56px] leading-[1.05] tracking-[-0.015em] text-[color:var(--olive)]">
+              The toolkit a good <em className="italic">AI PM</em> needs.
+            </h2>
+          </div>
+          <p className="lg:col-span-5 text-[15px] lg:text-[16px] leading-[1.6] text-[color:var(--olive-light)] max-w-[44ch]">
+            What I&apos;ve been building competence in — and what I think
+            anyone shipping AI features at a real company should keep close
+            at hand.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 lg:gap-6">
+          {skillGroups.map((g) => (
+            <article
+              key={g.n}
+              className="rounded-[24px] border border-[color:var(--olive-mute)] bg-[color:var(--cream-light)] p-6 lg:p-7 flex flex-col gap-4"
+            >
+              <header className="flex items-baseline gap-3">
+                <span className="font-display text-[22px] lg:text-[26px] text-[color:var(--olive-light)] leading-none">
+                  {g.n}
+                </span>
+                <h3 className="font-display text-[22px] lg:text-[26px] leading-tight text-[color:var(--olive)]">
+                  {g.category}
+                </h3>
+              </header>
+              <ul className="flex flex-col gap-2">
+                {g.items.map((item, idx) => (
+                  <li
+                    key={idx}
+                    className="flex gap-3 text-[13px] lg:text-[14px] leading-[1.55] text-[color:var(--olive)]"
+                  >
+                    <span
+                      className="mt-[0.55em] w-[5px] h-[5px] rounded-full bg-[color:var(--olive-light)] shrink-0"
+                      aria-hidden
+                    />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
